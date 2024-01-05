@@ -1,0 +1,60 @@
+from keras.models import Sequential
+from keras.layers import LSTM, Dense
+from keras.optimizers import Adam
+import numpy as np
+
+# Assuming your data is in the form of numpy arrays
+# X should be of shape (num_samples, num_timesteps, num_features)
+# y should be of shape (num_samples, num_features)
+
+# Example data shapes
+num_samples = 1000
+num_timesteps = 10
+num_input_features = 1
+num_output_features = 288
+
+# Generating random data for demonstration
+X = np.random.rand(num_samples, num_timesteps, num_input_features)
+y = np.random.rand(num_samples, num_output_features)
+
+# Define your LSTM model using Keras
+model = Sequential()
+model.add(LSTM(64, input_shape=(num_timesteps, num_input_features), return_sequences=False))
+model.add(Dense(num_output_features))
+
+# Compile the model
+optimizer = Adam(lr=0.001)
+model.compile(optimizer=optimizer, loss='mse')
+
+# Training the model
+
+batch_size = 32
+
+# Training the model with plotting
+num_epochs = 10
+
+history = model.fit(X, y, epochs=num_epochs, batch_size=batch_size, shuffle=True)
+
+# Plot the loss over epochs
+plt.plot(range(1, num_epochs+1), history.history['loss'], marker='o')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Training Loss over Epochs')
+plt.show()
+
+# Now you can use the trained model for predictions
+# For example:
+test_input = np.random.rand(1, num_timesteps, num_input_features)  # Replace with your test data
+predicted_output = model.predict(test_input)
+
+# Assuming you have the ground truth for the test input (replace with your actual values)
+actual_output = np.random.rand(1, num_output_features)  # Replace with your actual values
+
+# Plot the predicted vs. actual output
+plt.plot(range(1, num_output_features+1), predicted_output.flatten(), label='Predicted')
+plt.plot(range(1, num_output_features+1), actual_output.flatten(), label='Actual')
+plt.xlabel('Feature')
+plt.ylabel('Value')
+plt.title('Predicted vs. Actual Output')
+plt.legend()
+plt.show()
